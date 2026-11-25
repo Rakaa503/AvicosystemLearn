@@ -1,0 +1,28 @@
+{
+  "name": "avicore",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "AviCore - Central Backend Foundation for AviCosystem",
+  "scripts": {
+    "dev": "bun --watch src/server.ts",
+    "start": "bun src/server.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@fastify/cors": "^11.0.0",
+    "@fastify/helmet": "^13.0.0",
+    "@fastify/rate-limit": "^10.0.0",
+    "@fastify/swagger": "^9.0.0",
+    "@fastify/swagger-ui": "^5.0.0",
+    "@fastify/type-provider-typebox": "^5.0.0",
+    "@sinclair/typebox": "^0.34.0",
+    "avss-lite-Raka503": "github:Rakaa503/Avidev-Security",
+    "fastify": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5.9.0"
+  }
+}
