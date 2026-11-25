@@ -41,6 +41,39 @@ export class RefreshTokenRepository {
         });
     }
 
+    async rotate(
+        oldTokenHash: string,
+        data: {
+            tokenHash: string;
+            userId: string;
+            expiresAt: Date;
+        }
+    ) {
+        return prisma.$transaction(async (tx) => {
+            const result = await tx.refreshToken.updateMany({
+                where: {
+                    tokenHash: oldTokenHash,
+                    revokedAt: null,
+                    expiresAt: {
+                        gt: new Date()
+                    }
+                },
+                data: {
+                    revokedAt: new Date()
+                }
+            });
+
+            if (result.count !== 1) {
+                return false;
+            }
+
+            await tx.refreshToken.create({
+                data
+            });
+
+            return true;
+        });
+    }
     deleteExpired() {
         return prisma.refreshToken.deleteMany({
             where: {
@@ -54,3 +87,4 @@ export class RefreshTokenRepository {
 
 export const refreshTokenRepository =
     new RefreshTokenRepository();
+
