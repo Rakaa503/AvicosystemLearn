@@ -1,5 +1,6 @@
 ﻿import type { FastifyInstance } from "fastify";
 import { Type } from "@sinclair/typebox";
+import { env } from "../../core/config/env";
 
 export async function healthModule(app: FastifyInstance) {
     app.get("/health", {
@@ -21,8 +22,8 @@ export async function healthModule(app: FastifyInstance) {
         success: true,
         data: {
             status: "healthy",
-            service: "AviCore",
-            version: "1.0.0"
+            service: env.APP_NAME,
+            version: env.APP_VERSION
         }
     }));
 }
