@@ -8,6 +8,7 @@ import type { TypeBoxTypeProvider } from "@fastify/type-provider-typebox";
 
 import { env } from "./core/config/env";
 import { registerRoutes } from "./routes";
+import { databasePlugin } from "./core/database/database.plugin";
 
 export async function buildApp() {
     const app = Fastify({
@@ -71,8 +72,10 @@ export async function buildApp() {
         });
     });
 
+    await app.register(databasePlugin);
     await app.register(registerRoutes);
 
     return app;
 }
+
 

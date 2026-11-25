@@ -22,6 +22,7 @@
     "@sinclair/typebox": "^0.34.0",
     "avss-lite-Raka503": "github:Rakaa503/Avidev-Security",
     "fastify": "^5.0.0",
+    "jose": "^6.2.18",
     "pg": "^8.23.1"
   },
   "devDependencies": {
