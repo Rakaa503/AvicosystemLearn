@@ -3,6 +3,22 @@ import { Type } from "@sinclair/typebox";
 import { createdResponse } from "../../core/http/api-response";
 import { identityService } from "./services/identity.service";
 
+const userResponseSchema = Type.Object({
+    id: Type.String(),
+    email: Type.String(),
+    username: Type.String(),
+    role: Type.String(),
+    isActive: Type.Boolean(),
+    createdAt: Type.String()
+});
+
+const tokenResponseSchema = Type.Object({
+    accessToken: Type.String(),
+    refreshToken: Type.String(),
+    tokenType: Type.String(),
+    expiresIn: Type.Number()
+});
+
 export async function identityModule(app: FastifyInstance) {
     app.post("/identity/register", {
         schema: {
@@ -17,14 +33,7 @@ export async function identityModule(app: FastifyInstance) {
                 201: Type.Object({
                     success: Type.Boolean(),
                     message: Type.String(),
-                    data: Type.Object({
-                        id: Type.String(),
-                        email: Type.String(),
-                        username: Type.String(),
-                        role: Type.String(),
-                        isActive: Type.Boolean(),
-                        createdAt: Type.String()
-                    })
+                    data: userResponseSchema
                 })
             }
         }
@@ -40,5 +49,41 @@ export async function identityModule(app: FastifyInstance) {
         return reply.status(201).send(
             createdResponse(user, "Account registered successfully")
         );
+    });
+
+    app.post("/identity/login", {
+        schema: {
+            tags: ["Identity"],
+            summary: "Authenticate an AviCosystem account",
+            body: Type.Object({
+                identifier: Type.String({ minLength: 1 }),
+                password: Type.String({ minLength: 1 })
+            }),
+            response: {
+                200: Type.Object({
+                    success: Type.Boolean(),
+                    message: Type.String(),
+                    data: Type.Intersect([
+                        Type.Object({
+                            user: userResponseSchema
+                        }),
+                        tokenResponseSchema
+                    ])
+                })
+            }
+        }
+    }, async (request, reply) => {
+        const result = await identityService.login(
+            request.body as {
+                identifier: string;
+                password: string;
+            }
+        );
+
+        return reply.status(200).send({
+            success: true,
+            message: "Login successful",
+            data: result
+        });
     });
 }

@@ -1,10 +1,16 @@
-import { AppError } from "../../../core/errors/app-error";
+﻿import { AppError } from "../../../core/errors/app-error";
 import { ERROR_CODES } from "../../../core/errors/error-codes";
 import { userRepository } from "../repositories/user.repository";
+import { tokenService } from "./token.service";
 
 interface RegisterInput {
     email: string;
     username: string;
+    password: string;
+}
+
+interface LoginInput {
+    identifier: string;
     password: string;
 }
 
@@ -64,8 +70,7 @@ export class IdentityService {
             );
         }
 
-        const existingUsername =
-            await userRepository.findByUsername(username);
+        const existingUsername = await userRepository.findByUsername(username);
 
         if (existingUsername) {
             throw new AppError(
@@ -86,6 +91,62 @@ export class IdentityService {
         const { passwordHash: _, ...safeUser } = user;
 
         return safeUser;
+    }
+
+    async login(input: LoginInput) {
+        const identifier = input.identifier.trim();
+        const password = input.password;
+
+        if (!identifier || !password) {
+            throw new AppError(
+                "Identifier and password are required",
+                ERROR_CODES.VALIDATION_ERROR,
+                400
+            );
+        }
+
+        const normalizedIdentifier = identifier.toLowerCase();
+
+        const user = normalizedIdentifier.includes("@")
+            ? await userRepository.findByEmail(normalizedIdentifier)
+            : await userRepository.findByUsername(identifier);
+
+        if (!user) {
+            throw new AppError(
+                "Invalid credentials",
+                ERROR_CODES.UNAUTHORIZED,
+                401
+            );
+        }
+
+        const passwordValid = await Bun.password.verify(
+            password,
+            user.passwordHash
+        );
+
+        if (!passwordValid) {
+            throw new AppError(
+                "Invalid credentials",
+                ERROR_CODES.UNAUTHORIZED,
+                401
+            );
+        }
+
+        if (!user.isActive) {
+            throw new AppError(
+                "Account is inactive",
+                ERROR_CODES.FORBIDDEN,
+                403
+            );
+        }
+
+        const tokens = await tokenService.issueTokens(user.id);
+        const { passwordHash: _, ...safeUser } = user;
+
+        return {
+            user: safeUser,
+            ...tokens
+        };
     }
 }
 
