@@ -1,6 +1,7 @@
 ﻿import type { FastifyInstance } from "fastify";
 import { AppError } from "./app-error";
 import { ERROR_CODES } from "./error-codes";
+import { env } from "../config/env";
 
 export function registerErrorHandler(app: FastifyInstance) {
     app.setNotFoundHandler(async (_request, reply) => {
@@ -46,7 +47,10 @@ export function registerErrorHandler(app: FastifyInstance) {
             success: false,
             error: {
                 code: ERROR_CODES.INTERNAL_SERVER_ERROR,
-                message: "Internal server error"
+                message:
+                    env.APP_ENV === "development" && error instanceof Error
+                        ? error.message
+                        : "Internal server error"
             }
         });
     });
