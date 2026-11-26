@@ -9,6 +9,7 @@ import type { TypeBoxTypeProvider } from "@fastify/type-provider-typebox";
 import { env } from "./core/config/env";
 import { registerRoutes } from "./routes";
 import { databasePlugin } from "./core/database/database.plugin";
+import { registerErrorHandler } from "./core/errors/error-handler";
 
 export async function buildApp() {
     const app = Fastify({
@@ -56,26 +57,14 @@ export async function buildApp() {
         routePrefix: "/docs"
     });
 
-    app.setNotFoundHandler(async (_request, reply) => {
-        return reply.code(404).send({
-            success: false,
-            message: "Route not found"
-        });
-    });
+    registerErrorHandler(app);
 
-    app.setErrorHandler((error, request, reply) => {
-        request.log.error({ err: error }, "Request failed");
-
-        return reply.code(500).send({
-            success: false,
-            message: "Internal server error"
-        });
-    });
 
     await app.register(databasePlugin);
     await app.register(registerRoutes);
 
     return app;
 }
+
 
 

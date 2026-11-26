@@ -29,18 +29,36 @@ export function registerErrorHandler(app: FastifyInstance) {
             });
         }
 
-        if (
-            typeof error === "object" &&
-            error !== null &&
-            "validation" in error
-        ) {
-            return reply.code(400).send({
-                success: false,
-                error: {
-                    code: ERROR_CODES.VALIDATION_ERROR,
-                    message: "Request validation failed"
-                }
-            });
+        if (typeof error === "object" && error !== null) {
+            const fastifyError = error as {
+                validation?: unknown;
+                statusCode?: number;
+                code?: string;
+            };
+
+            if (fastifyError.validation) {
+                return reply.code(400).send({
+                    success: false,
+                    error: {
+                        code: ERROR_CODES.VALIDATION_ERROR,
+                        message: "Request validation failed"
+                    }
+                });
+            }
+
+            if (
+                typeof fastifyError.statusCode === "number" &&
+                fastifyError.statusCode >= 400 &&
+                fastifyError.statusCode < 500
+            ) {
+                return reply.code(fastifyError.statusCode).send({
+                    success: false,
+                    error: {
+                        code: fastifyError.code ?? ERROR_CODES.VALIDATION_ERROR,
+                        message: "Invalid request"
+                    }
+                });
+            }
         }
 
         return reply.code(500).send({
