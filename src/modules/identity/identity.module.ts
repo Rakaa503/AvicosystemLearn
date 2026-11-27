@@ -3,6 +3,7 @@ import { Type } from "@sinclair/typebox";
 import { createdResponse } from "../../core/http/api-response";
 import { identityService } from "./services/identity.service";
 import { tokenService } from "./services/token.service";
+import { authenticate } from "./middleware/auth.middleware";
 
 const userResponseSchema = Type.Object({
     id: Type.String(),
@@ -137,6 +138,31 @@ export async function identityModule(app: FastifyInstance) {
         return reply.status(200).send({
             success: true,
             message: "Logout successful"
+        });
+    });
+
+    app.get("/identity/me", {
+        schema: {
+            tags: ["Identity"],
+            summary: "Get authenticated user identity",
+            response: {
+                200: Type.Object({
+                    success: Type.Boolean(),
+                    message: Type.String(),
+                    data: Type.Object({
+                        userId: Type.String()
+                    })
+                })
+            }
+        },
+        preHandler: authenticate
+    }, async (request, reply) => {
+        return reply.status(200).send({
+            success: true,
+            message: "Authenticated successfully",
+            data: {
+                userId: request.authUser!.userId
+            }
         });
     });
 }
