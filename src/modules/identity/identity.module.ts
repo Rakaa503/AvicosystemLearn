@@ -2,6 +2,7 @@
 import { Type } from "@sinclair/typebox";
 import { createdResponse } from "../../core/http/api-response";
 import { identityService } from "./services/identity.service";
+import { tokenService } from "./services/token.service";
 
 const userResponseSchema = Type.Object({
     id: Type.String(),
@@ -83,6 +84,33 @@ export async function identityModule(app: FastifyInstance) {
         return reply.status(200).send({
             success: true,
             message: "Login successful",
+            data: result
+        });
+    });
+
+    app.post("/identity/refresh", {
+        schema: {
+            tags: ["Identity"],
+            summary: "Rotate refresh token and issue new access token",
+            body: Type.Object({
+                refreshToken: Type.String({ minLength: 1 })
+            }),
+            response: {
+                200: Type.Object({
+                    success: Type.Boolean(),
+                    message: Type.String(),
+                    data: tokenResponseSchema
+                })
+            }
+        }
+    }, async (request, reply) => {
+        const result = await tokenService.refreshAccessToken(
+            (request.body as { refreshToken: string }).refreshToken
+        );
+
+        return reply.status(200).send({
+            success: true,
+            message: "Token refreshed successfully",
             data: result
         });
     });
