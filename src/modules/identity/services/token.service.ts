@@ -146,6 +146,38 @@ export class TokenService {
         };
     }
 
+    async revokeRefreshToken(rawToken: string) {
+        if (!rawToken || typeof rawToken !== "string") {
+            throw new AppError(
+                "Invalid refresh token",
+                ERROR_CODES.UNAUTHORIZED,
+                401
+            );
+        }
+
+        const tokenHash = this.hashRefreshToken(rawToken);
+        const storedToken = await refreshTokenRepository.findByHash(tokenHash);
+
+        if (!storedToken || storedToken.revokedAt) {
+            throw new AppError(
+                "Invalid refresh token",
+                ERROR_CODES.UNAUTHORIZED,
+                401
+            );
+        }
+
+        if (storedToken.expiresAt <= new Date()) {
+            throw new AppError(
+                "Refresh token expired",
+                ERROR_CODES.UNAUTHORIZED,
+                401
+            );
+        }
+
+        await refreshTokenRepository.revoke(storedToken.id);
+
+        return true;
+    }
     async verifyAccessToken(token: string) {
         const result = await jwtVerify(token, jwtKey, {
             issuer: env.APP_NAME,
@@ -158,3 +190,4 @@ export class TokenService {
 }
 
 export const tokenService = new TokenService();
+

@@ -114,4 +114,29 @@ export async function identityModule(app: FastifyInstance) {
             data: result
         });
     });
+
+    app.post("/identity/logout", {
+        schema: {
+            tags: ["Identity"],
+            summary: "Revoke current refresh token",
+            body: Type.Object({
+                refreshToken: Type.String({ minLength: 1 })
+            }),
+            response: {
+                200: Type.Object({
+                    success: Type.Boolean(),
+                    message: Type.String()
+                })
+            }
+        }
+    }, async (request, reply) => {
+        await tokenService.revokeRefreshToken(
+            (request.body as { refreshToken: string }).refreshToken
+        );
+
+        return reply.status(200).send({
+            success: true,
+            message: "Logout successful"
+        });
+    });
 }
