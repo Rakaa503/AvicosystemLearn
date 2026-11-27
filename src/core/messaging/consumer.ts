@@ -9,6 +9,7 @@ export async function consumeEvent<T>(
     handler: (payload: T) => Promise<void>
 ): Promise<void> {
     const channel = getRabbitMQChannel();
+    channel.prefetch(10);
 
     await channel.assertQueue(queueName, {
         durable: true
@@ -41,3 +42,4 @@ export async function consumeEvent<T>(
         }
     });
 }
+
