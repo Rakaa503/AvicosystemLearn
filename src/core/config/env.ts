@@ -1,4 +1,4 @@
-﻿const port = Number(Bun.env.APP_PORT ?? 3000);
+const port = Number(Bun.env.APP_PORT ?? 3000);
 
 const appEnv = Bun.env.APP_ENV ?? "development";
 
@@ -29,5 +29,6 @@ export const env = Object.freeze({
     APP_PORT: port,
     APP_VERSION: Bun.env.APP_VERSION ?? "1.0.0",
     APP_CORS_ORIGIN: Bun.env.APP_CORS_ORIGIN ?? "http://localhost:3001",
-    JWT_SECRET: jwtSecret
+    JWT_SECRET: jwtSecret,
+    RABBITMQ_URL: Bun.env.RABBITMQ_URL ?? "amqp://localhost:5672"
 });

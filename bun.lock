@@ -14,12 +14,14 @@
         "@prisma/adapter-pg": "7.10.0",
         "@prisma/client": "7.10.0",
         "@sinclair/typebox": "^0.34.0",
+        "amqplib": "^2.4.2",
         "avss-lite-Raka503": "github:Rakaa503/Avidev-Security",
         "fastify": "^5.0.0",
         "jose": "^6.2.18",
         "pg": "^8.23.1",
       },
       "devDependencies": {
+        "@types/amqplib": "^2.2.1",
         "@types/bun": "latest",
         "@types/node": "^26.6.7",
         "@types/pg": "^8.23.1",
@@ -223,6 +225,8 @@
 
     "@swc/helpers": ["@swc/helpers@0.5.23", "", { "dependencies": { "tslib": "^2.8.0" } }, "sha512-5lSsMOTXURePglDfvuAQUqkGek9Hg2kksOYay2m0+XR++b2NWYL/4sWyuvVBIs8oKnJaxkdi9whaL/sqN13afw=="],
 
+    "@types/amqplib": ["@types/amqplib@2.2.1", "", { "dependencies": { "amqplib": "*" } }, "sha512-P/mqQzKg3EGkgYGlYCVxukVFbUUq9tQVMACF273hSzfdh2KLa2KswNSRz/TYUxeHUDWdXlEdImMpPEtkwbSHNQ=="],
+
     "@types/bun": ["@types/bun@1.4.5", "", { "dependencies": { "bun-types": "1.4.5" } }, "sha512-DpgwNI9z0L1S0gtb45QLCWgwCUcMLnsHYMJHQvpNj7erGiCGBvpggltAIeARrtobNMKMuy0UP7i56tKKgwFs/Q=="],
 
     "@types/d3-array": ["@types/d3-array@3.0.3", "", {}, "sha512-Reoy+pKnvsksN0lQUlcH6dOGjRZ/3WRwXR//m+/8lt1BXeI4xyaUZoqULNjyXXRuh0Mj4LNpkCvhUpQlY3X5xQ=="],
@@ -286,6 +290,8 @@
     "ajv": ["ajv@8.20.0", "", { "dependencies": { "fast-deep-equal": "^3.1.3", "fast-uri": "^3.0.1", "json-schema-traverse": "^1.0.0", "require-from-string": "^2.0.2" } }, "sha512-Thbli+OlOj+iMPYFBVBfJ3OmCAnaSyNn4M1vz9T6Gka5Jt9ba/HIR56joy65tY6kx/FCF5VXNB819Y7/GUrBGA=="],
 
     "ajv-formats": ["ajv-formats@3.0.1", "", { "dependencies": { "ajv": "^8.0.0" } }, "sha512-8iUql50EUR+uUcdRQ3HDqa6EVyo3docL8g5WJ3FNcWmu62IbkGUue/pEyLBW8VGKKucTPgqeks4fIU1DA4yowQ=="],
+
+    "amqplib": ["amqplib@2.4.2", "", {}, "sha512-FjhULAQ7jwjs8bi1eAwSyUfiY0tbyi8vsh4iRiHblxj2+QETfJcVobTQ1u919ARPq0TAxSR06m2gO0yp/ccgdw=="],
 
     "ansi-align": ["ansi-align@3.0.1", "", { "dependencies": { "string-width": "^4.1.0" } }, "sha512-IOfwwBF5iczOjp/WeY4YxyjqAFMQoZufdQWDd19SEExbVLNXqvpzSJ/M7Za4/sCPmQ0+GRquoA7bGcINcxew6w=="],
 

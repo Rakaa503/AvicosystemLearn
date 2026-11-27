@@ -20,12 +20,14 @@
     "@prisma/adapter-pg": "7.10.0",
     "@prisma/client": "7.10.0",
     "@sinclair/typebox": "^0.34.0",
+    "amqplib": "^2.4.2",
     "avss-lite-Raka503": "github:Rakaa503/Avidev-Security",
     "fastify": "^5.0.0",
     "jose": "^6.2.18",
     "pg": "^8.23.1"
   },
   "devDependencies": {
+    "@types/amqplib": "^2.2.1",
     "@types/bun": "latest",
     "@types/node": "^26.6.7",
     "@types/pg": "^8.23.1",
