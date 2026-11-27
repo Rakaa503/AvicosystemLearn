@@ -1,10 +1,11 @@
-﻿import type { FastifyReply, FastifyRequest } from "fastify";
+import type { FastifyReply, FastifyRequest } from "fastify";
 import { tokenService } from "../services/token.service";
 
 declare module "fastify" {
     interface FastifyRequest {
         authUser?: {
             userId: string;
+            role?: "USER" | "ADMIN" | "SUPER_ADMIN";
         };
     }
 }
@@ -63,3 +64,4 @@ export async function authenticate(
         });
     }
 }
+

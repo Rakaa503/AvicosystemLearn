@@ -1,9 +1,10 @@
-﻿import type { FastifyInstance } from "fastify";
+import type { FastifyInstance } from "fastify";
 import { Type } from "@sinclair/typebox";
 import { createdResponse } from "../../core/http/api-response";
 import { identityService } from "./services/identity.service";
 import { tokenService } from "./services/token.service";
 import { authenticate } from "./middleware/auth.middleware";
+import { authorize } from "./middleware/authorization.middleware";
 
 const userResponseSchema = Type.Object({
     id: Type.String(),
@@ -162,6 +163,39 @@ export async function identityModule(app: FastifyInstance) {
             message: "Authenticated successfully",
             data: {
                 userId: request.authUser!.userId
+            }
+        });
+    });
+    app.get("/identity/admin", {
+        schema: {
+            tags: ["Identity"],
+            summary: "Admin-only access",
+        },
+        preHandler: [authenticate, authorize("ADMIN", "SUPER_ADMIN")]
+    }, async (request, reply) => {
+        return reply.status(200).send({
+            success: true,
+            message: "Admin access granted",
+            data: {
+                userId: request.authUser!.userId,
+                role: request.authUser!.role
+            }
+        });
+    });
+
+    app.get("/identity/super-admin", {
+        schema: {
+            tags: ["Identity"],
+            summary: "Super admin-only access",
+        },
+        preHandler: [authenticate, authorize("SUPER_ADMIN")]
+    }, async (request, reply) => {
+        return reply.status(200).send({
+            success: true,
+            message: "Super admin access granted",
+            data: {
+                userId: request.authUser!.userId,
+                role: request.authUser!.role
             }
         });
     });
