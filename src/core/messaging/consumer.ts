@@ -9,10 +9,33 @@ export async function consumeEvent<T>(
     handler: (payload: T) => Promise<void>
 ): Promise<void> {
     const channel = getRabbitMQChannel();
+
     channel.prefetch(10);
 
-    await channel.assertQueue(queueName, {
+    const deadLetterExchange = "avicore.dead";
+
+    await channel.assertExchange(deadLetterExchange, "topic", {
         durable: true
+    });
+
+    const deadLetterQueue = `${queueName}.dead`;
+
+    await channel.assertQueue(deadLetterQueue, {
+        durable: true
+    });
+
+    await channel.bindQueue(
+        deadLetterQueue,
+        deadLetterExchange,
+        `${queueName}.dead`
+    );
+
+    await channel.assertQueue(queueName, {
+        durable: true,
+        arguments: {
+            "x-dead-letter-exchange": deadLetterExchange,
+            "x-dead-letter-routing-key": `${queueName}.dead`
+        }
     });
 
     await channel.bindQueue(
@@ -42,4 +65,3 @@ export async function consumeEvent<T>(
         }
     });
 }
-
