@@ -400,8 +400,6 @@ Don't immediately connect RabbitMQ to Identity or other AviCosystem modules. Mak
 
 ---
 
-## 8. ---
-
 ## 8. RabbitMQ HTTP Publishing Endpoint — Implemented
 
 A dedicated HTTP endpoint has been implemented to test publishing messages from the Fastify API into RabbitMQ.
